@@ -5,15 +5,29 @@
     <title>UserList</title>
 </head>
 <body>
-    <table>
+<a href="@{user/new}">New</a>
+<div>
+    <form th:action="@{/user/search}" method="POST">
+        <input type="text" name="keyword" placeholder="Tim ten...">
+        <button type="submit">Search</button>
+    </form>
+</div>
+    <table border="1">
         <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Action</th>
         </tr>
         <tr th:each="u: ${userList}">
             <td th:text="${u.id}">1</td>
             <td th:text="${u.name}">Test</td>
 <!--            chi can .name no se tu goi ham getName() -->
+            <td>
+                <a th:href="@{'/user/delete?id='+ ${u.id}}">Delete</a>
+            </td>
+            <td>
+                <a th:href="@{'/user/edit?id='+ ${u.id}}">Edit</a>
+            </td>
         </tr>
     </table>
 </body>

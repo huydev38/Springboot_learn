@@ -8,13 +8,13 @@ import javax.persistence.*;
 //JPA - Hibernate
 //Data - de gen ham getter setter
 @Data
-@Entity
+@Entity //Map class User với bảng
 //@Table(name = "user") //map vao bang user, neu class giong ten table, bo di cung duoc
 //MAP
 public class User {
 
     @Id //khoa chinh
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)  // neu dung AutoIncrement, neu khong dung AutoIncrement thi khong map duoc -> loi
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // neu dung AutoIncrement, neu khong dung AutoIncrement thi khong map duoc -> loi
     private int id;
 
     private String name;
@@ -28,6 +28,7 @@ public class User {
     //them rang buoc unique
     @Column(unique = true)
     private String username;
+
     private String password;
 
 }

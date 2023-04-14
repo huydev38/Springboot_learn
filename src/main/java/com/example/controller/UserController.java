@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class UserController {
 //    UserService userService = new UserService();
     @Autowired  //map bean tao truoc vao bien aka DI
     UserService userService;
+
     @GetMapping("/user/list")
     public String list(Model model){
         List<User> users = userService.getAll();
@@ -43,5 +45,32 @@ public class UserController {
 //        user.setAge(age);
         userService.create(user);
         return "redirect:/user/list"; //GET
+    }
+
+
+    @GetMapping("/user/delete")
+    public String deleteUser(@RequestParam("id") int id){
+        userService.delete(id);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping("/user/edit")
+    public String updateUser(@RequestParam("id") int id, Model model){
+        User user = userService.getById(id);
+        model.addAttribute("user", user); //day thong tin user qua view
+        return "edit-user.html";
+    }
+
+    @PostMapping("/user/edit")
+    public String updateUser(@ModelAttribute User user){
+        userService.update(user);
+        return "redirect:/user/list";
+    }
+
+    @PostMapping("/user/search")
+    public String search(Model model, @RequestParam("keyword") String keyword){
+        List<User> users = userService.searchName(keyword);
+        model.addAttribute("userList",users);
+        return "users.html";
     }
 }

@@ -20,6 +20,8 @@ public class User {
     private String name;
     private int age;
 
+    //luu ten file path
+    private String avatarURL;
     //neu dat ten cot trong db khac, thi dung column de map
     //@Column(name="u_name")
     //private String username;

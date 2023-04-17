@@ -1,6 +1,8 @@
 package com.example.repository;
 
 import com.example.dto.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +22,9 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     List<User> findByName(String s);
 
+    //Pageable trong thu vien springboot.data.domain
+    Page<User> findByName(String s, Pageable pageable);
+
     @Query("SELECT u from User u  WHERE u.name LIKE :x")
         //Select tren Entity / tren class User chu khong phai tren bang
             //User la ten ENTITIES
@@ -28,6 +33,9 @@ public interface UserRepo extends JpaRepository<User, Integer> {
         // thay vi dung ?, dung :x nhu placeholder, (x la bien, co the doi thanh ki tu khac, vd :y)
         // String s la tham so truyen vao
     List<User> searchByName(@Param("x") String s);
+    @Query("SELECT u from User u  WHERE u.name LIKE :x")
+    Page<User> searchByName(@Param("x") String s, Pageable pageable);
+
 
     //method tuy bien
     @Query("SELECT u FROM User u WHERE u.name LIKE :x OR u.username LIKE :x")

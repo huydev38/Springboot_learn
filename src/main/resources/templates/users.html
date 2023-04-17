@@ -5,23 +5,42 @@
     <title>UserList</title>
 </head>
 <body>
-<a th:href="@{user/new}">New</a>
+
+<a th:href="@{/user/new}">New</a>
+<!--Sua lai de dung Page-->
 <div>
-    <form th:action="@{/user/search}" method="POST">
-        <input type="text" name="keyword" placeholder="Tim ten...">
+    <form th:action="@{/user/search}" method="GET">
+        <input type="text" name="keyword" placeholder="Tim ten..." th:value="${keyword}"> <br>
+        <input name="currentPage" placeholder="Trang hien tai" th:value="${currentPage}"> <br>
+        <input name="size" placeholder="Nhap so luong ban ghi/trang" th:value="${size}"> <br>
+        <select name="sortedField"> Sap xep theo:
+            <option  value="name">Name</option>
+            <option  value="age">Age</option>
+        </select>
         <button type="submit">Search</button>
     </form>
+    <p th:text="${totalPage}"></p> <br>
+    <p th:text="${totalElement}"></p>
+
+
 </div>
     <table border="1">
         <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Age</th>
+            <th>Avatar</th>
             <th>Action</th>
         </tr>
         <tr th:each="u: ${userList}">
             <td th:text="${u.id}">1</td>
             <td th:text="${u.name}">Test</td>
+            <td th:text="${u.age}"></td>
 <!--            chi can .name no se tu goi ham getName() -->
+            <td>
+        <!--                download file ve de hien thi ra man hinh-->
+                <img th:src="@{'/user/download?filename='+${u.avatarURL}}"/>
+            </td>
             <td>
                 <a th:href="@{'/user/delete?id='+ ${u.id}}">Delete</a>
             </td>

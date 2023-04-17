@@ -21,10 +21,10 @@ public class LoginController {
 
         if(username.equals("admin")&&password.equals("123")){
             session.setAttribute("username",username);
+
             return "redirect:/hello";
     }
             return "redirect:/login";
     }
 
 }
-

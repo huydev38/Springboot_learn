@@ -1,12 +1,15 @@
 package com.example.dto;
 
-import lombok.Builder;
+
 import lombok.Data;
-import net.bytebuddy.implementation.bind.annotation.Default;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class SearchDTO {
+
     private String keyword;
+
     private Integer currentPage;
     private Integer size;
     private String sortedField;

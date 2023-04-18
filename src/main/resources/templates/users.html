@@ -9,10 +9,10 @@
 <a th:href="@{/user/new}">New</a>
 <!--Sua lai de dung Page-->
 <div>
-    <form th:action="@{/user/search}" method="GET">
-        <input type="text" name="keyword" placeholder="Tim ten..." th:value="${keyword}"> <br>
-        <input name="currentPage" placeholder="Trang hien tai" th:value="${currentPage}"> <br>
-        <input name="size" placeholder="Nhap so luong ban ghi/trang" th:value="${size}"> <br>
+    <form th:action="@{/user/search}" method="GET" th:object="${searchDTO}">
+        <input type="text" th:field="*{keyword}" placeholder="Tim ten..." > <br>
+        <input th:field="*{currentPage}" placeholder="Trang hien tai" > <br>
+        <input th:field="*{size}" placeholder="Nhap so luong ban ghi/trang" > <br>
         <select name="sortedField"> Sap xep theo:
             <option  value="name">Name</option>
             <option  value="age">Age</option>

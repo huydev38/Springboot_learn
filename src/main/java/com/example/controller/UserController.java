@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.MultipartFilter;
+
 
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,6 +32,7 @@ public class UserController {
     public String list(Model model){
         List<User> users = userService.getAll();
         model.addAttribute("userList",users);
+//        model.addAttribute("searchDTO", new SearchDTO());
         return "users.html";
     }
     @GetMapping("/user/new")

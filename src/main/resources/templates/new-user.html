@@ -8,16 +8,17 @@
     <form th:action="@{/user/new}" method="post" enctype="multipart/form-data">
         <div>
             <!-- Upload avatar           -->
-            <label>Avatar File: </label>
+        <!--       O day dung message.properties-->
+            <label th:text="#{user.avatar.file}" ></label>
             <input type="file" name="file" accept="/image/*">
         </div>
         <div>
-            <label>Name:</label>
+            <label th:text="#{user.name}">:</label>
             <input type="text" name="name"/>
         </div>
 
         <div>
-            <label>Age:</label>
+            <label th:text="#{user.age}">Age:</label>
             <input type="number" name="age"/>
         </div>
         <div>

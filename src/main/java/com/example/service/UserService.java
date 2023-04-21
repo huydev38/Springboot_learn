@@ -40,9 +40,7 @@ public class UserService {
     public void update(User user){
         User currentUser = userRepo.findById(user.getId()).orElse(null);
         if(currentUser!=null){
-            currentUser.setName(user.getName());
-            currentUser.setAge(user.getAge());
-            userRepo.save(currentUser);
+            userRepo.save(user);
 
         }
     }
@@ -59,7 +57,7 @@ public class UserService {
     public Page<User> searchName(//String name, int currentPage, int size, String sortedField
                                  SearchDTO searchDTO){
         //trang hien tai tinh tu so 0, size la so ban ghi tren mot trang
-        Sort sortBy=Sort.by("name").ascending().and(Sort.by("age").descending()); //sap xep theo ten va tuoi
+        Sort sortBy=Sort.by("name").ascending().and(Sort.by("age").descending()); //sap xep theo ten va tuoi (mac dinh)
 
         //sort theo yeu cau
         if(StringUtils.hasText(searchDTO.getSortedField())){ //check xem co empty khong

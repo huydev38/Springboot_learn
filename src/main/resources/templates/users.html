@@ -11,6 +11,7 @@
 <div>
     <form th:action="@{/user/search}" method="GET" th:object="${searchDTO}">
         <input type="text" th:field="*{keyword}" placeholder="Tim ten..." > <br>
+        <p th:errors="*{keyword}"></p>
         <input th:field="*{currentPage}" placeholder="Trang hien tai" > <br>
         <input th:field="*{size}" placeholder="Nhap so luong ban ghi/trang" > <br>
         <select name="sortedField"> Sap xep theo:

@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.entity;
 
 import lombok.Data;
 
@@ -32,6 +32,11 @@ public class User {
     private String username;
 
     private String password;
+
+    @ManyToOne
+    //Many user to one department
+    //@JoinColumn(name = "department_id"); chi dung voi ManyToOne, neu ten giong thi khong can
+    private Department department;
 
 }
 

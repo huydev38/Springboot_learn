@@ -1,9 +1,12 @@
 package com.example.service;
 
 
+import com.example.dto.PageDTO;
 import com.example.dto.SearchDTO;
-import com.example.dto.User;
+import com.example.dto.UserDTO;
+import com.example.entity.User;
 import com.example.repository.UserRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +17,7 @@ import org.springframework.util.StringUtils;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service //tao bean: new Uservice, quan ly boi SpringContainer, tao truoc bean
 public class UserService {
@@ -21,12 +25,20 @@ public class UserService {
     @Autowired
     UserRepo userRepo;
 
+    private UserDTO convert(User user){
+        //co the set tung cai nhu
+        //User user = new User
+        //user.setName(userDTO.getName());
+        return new ModelMapper().map(user, UserDTO.class);
+    }
     @Transactional //transaction, dam bao cho thuc hien thanh cong, neu khong thi rollback
-    public void create(User user){
+    public void create(UserDTO userDTO){
+        User user = new ModelMapper().map(userDTO, User.class);
         userRepo.save(user);
     }
-    public  ArrayList<User> getAll(){
-         return (ArrayList<User>) userRepo.findAll();
+    public  List<UserDTO> getAll(){
+        List<User> userList=userRepo.findAll();
+         return userList.stream().map(u->convert(u)).collect(Collectors.toList());
     }
 
     //co san deleteById()
@@ -37,24 +49,31 @@ public class UserService {
     //co san save()
     //check xem ton tai ban ghi chua
     @Transactional
-    public void update(User user){
-        User currentUser = userRepo.findById(user.getId()).orElse(null);
+    public void update(UserDTO userDTO){
+        User currentUser = userRepo.findById(userDTO.getId()).orElse(null);
         if(currentUser!=null){
-            userRepo.save(user);
+            currentUser.setName(userDTO.getName());
+            currentUser.setAge(userDTO.getAge());
+            currentUser.setAvatarURL(userDTO.getAvatarURL());
+            userRepo.save(currentUser);
 
         }
     }
 
     //findById tra ve kieu Optional, them orElse: neu tim thay tra ve User, khong thi tra ve null
-    public User getById(int id){
-        return userRepo.findById(id).orElse(null);
+    public UserDTO getById(int id){
+        User user = userRepo.findById(id).orElse(null);
+        if(user!=null){
+            return convert(user);
+        }
+        return null;
     }
 
-    public List<User> searchName(String name){
-        return userRepo.searchByName(name);
+    public List<UserDTO> searchName(String name){
+        return userRepo.searchByName(name).stream().map(u->convert(u)).collect(Collectors.toList());
 
     }
-    public Page<User> searchName(//String name, int currentPage, int size, String sortedField
+    public PageDTO<List<UserDTO>> searchName(//String name, int currentPage, int size, String sortedField
                                  SearchDTO searchDTO){
         //trang hien tai tinh tu so 0, size la so ban ghi tren mot trang
         Sort sortBy=Sort.by("name").ascending().and(Sort.by("age").descending()); //sap xep theo ten va tuoi (mac dinh)
@@ -74,8 +93,16 @@ public class UserService {
         PageRequest pageRequest = PageRequest.of(searchDTO.getCurrentPage(),searchDTO.getSize(),sortBy);
 
         Page<User> page = userRepo.searchByName("%" + searchDTO.getKeyword() +"%", pageRequest);
-        System.out.println("So page la"+ page.getTotalPages()+"So phan tu la" + page.getTotalElements());
-        return page;
+        PageDTO<List<UserDTO>> pageDTO = new PageDTO<List<UserDTO>>();
+        pageDTO.setTotalPages(page.getTotalPages());
+        pageDTO.setTotalElements(page.getTotalElements());
+        pageDTO.setSize(page.getSize());
+        //List<User> users = page.getContent();
+        List<UserDTO> userDTOS = page.get().map(u->convert(u)).collect(Collectors.toList());
+
+        //T: List<UserDTO>
+        pageDTO.setData(userDTOS);
+        return pageDTO;
     }
 }
 

@@ -3,6 +3,7 @@ package com.example.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 //ORM framework: Object - Record table
 //JPA - Hibernate
@@ -37,6 +38,9 @@ public class User {
     //Many user to one department
     //@JoinColumn(name = "department_id"); chi dung voi ManyToOne, neu ten giong thi khong can
     private Department department;
+
+    @Temporal(TemporalType.DATE)
+    private Date birthdate;
 
 }
 

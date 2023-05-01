@@ -1,9 +1,11 @@
 package com.example.controller;
 
+import com.example.dto.DepartmentDTO;
 import com.example.dto.PageDTO;
 import com.example.dto.SearchDTO;
 import com.example.dto.UserDTO;
 import com.example.entity.User;
+import com.example.service.DepartmentService;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,9 @@ public class UserController {
     @Autowired  //map bean tao truoc vao bien aka DI
     UserService userService;
 
+    @Autowired
+    DepartmentService departmentService;
+
     @GetMapping("/user/list")
     public String list(Model model){
         List<UserDTO> users = userService.getAll();
@@ -40,14 +45,18 @@ public class UserController {
     }
     @GetMapping("/user/new")
     public String newUser(Model model){
+        PageDTO<List<DepartmentDTO>> pageDTO = departmentService.search(new SearchDTO());
+        model.addAttribute("departmentList", pageDTO.getData());
         model.addAttribute("user", new UserDTO());
         return "new-user.html";
     }
 
     @PostMapping("user/new")
     public String newUser(@ModelAttribute("user") @Valid UserDTO userDTO,
-                          BindingResult bindingResult){
+                          BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
+            PageDTO<List<DepartmentDTO>> pageDTO = departmentService.search(new SearchDTO());
+            model.addAttribute("departmentList", pageDTO.getData());
             return "new-user.html";
         }
 
@@ -83,6 +92,8 @@ public class UserController {
     public String updateUser(@RequestParam("id") int id, Model model){
         UserDTO user = userService.getById(id);
         model.addAttribute("user", user); //day thong tin user qua view
+        PageDTO<List<DepartmentDTO>> pageDTO = departmentService.search(new SearchDTO());
+        model.addAttribute("departmentList", pageDTO.getData());
         return "edit-user.html";
     }
 
@@ -109,6 +120,8 @@ public class UserController {
                          {
                     //check xem co loi binding khong
                              if(bindingResult.hasErrors()){
+                                 PageDTO<List<DepartmentDTO>> pageDTO = departmentService.search(new SearchDTO());
+                                 model.addAttribute("departmentList", pageDTO.getData());
                                  return "users.html";
                              }
 

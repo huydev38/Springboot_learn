@@ -14,7 +14,12 @@
     <label>Name:</label>
     <input type="text" name="name" th:value="${user.name}"/>
   </div>
-
+  <div>
+    <label>Department</label>
+    <select name="department.id">
+      <option th:each="d:${departmentList}" th:value="${d.id}" th:text="${d.name}"></option>
+    </select>
+  </div>
   <div>
     <label>Age:</label>
     <input type="number" name="age" th:value="${user.age}"/>

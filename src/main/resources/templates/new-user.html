@@ -5,6 +5,9 @@
     <title>New-User</title>
 </head>
 <body>
+<div th:replace="/fragment.html::menu">
+
+</div>
     <form th:action="@{/user/new}" method="post" enctype="multipart/form-data" th:object="${user}">
         <div>
             <!-- Upload avatar           -->
@@ -18,11 +21,21 @@
             <p th:errors="*{name}"></p>
 
         </div>
-
+        <div>
+            <label>Birthdate</label>
+            <input type="text" th:field="*{birthdate}">
+        </div>
         <div>
             <label th:text="#{user.age}">Age:</label>
             <input type="number" th:field="*{age}"/>
             <p th:errors="*{age}"></p>
+        </div>
+
+        <div>
+            <label>Department</label>
+            <select th:field="*{department.id}">
+                <option th:each="d:${departmentList}" th:value="${d.id}" th:text="${d.name}"></option>
+            </select>
         </div>
         <div>
             <button type="submit">Submit</button>

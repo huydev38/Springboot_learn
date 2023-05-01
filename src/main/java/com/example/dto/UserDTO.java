@@ -1,10 +1,12 @@
 package com.example.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 
 @Data
@@ -25,4 +27,7 @@ public class UserDTO {
 
     //manytoone
     private DepartmentDTO department;
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date birthdate;
 }

@@ -1,11 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>UserList</title>
-</head>
+<html layout:decorate="/template.html" xmlns:layout="http://www.w3.org/1999/xhtml" lang="en">
 <body>
-
+<div layout:fragment="content">
 <a th:href="@{/user/new}">New</a>
 <!--Sua lai de dung Page-->
 <div>
@@ -30,17 +26,22 @@
             <th>Id</th>
             <th>Name</th>
             <th>Age</th>
+            <th>Birthdate</th>
             <th>Avatar</th>
+            <th>Department</th>
             <th>Action</th>
         </tr>
         <tr th:each="u: ${userList}">
             <td th:text="${u.id}">1</td>
             <td th:text="${u.name}">Test</td>
             <td th:text="${u.age}"></td>
+            <td th:text="${#dates.format(u.birthdate, 'dd/MM/yyyy')}"></td>
 <!--            chi can .name no se tu goi ham getName() -->
             <td>
         <!--                download file ve de hien thi ra man hinh-->
                 <img th:src="@{'/user/download?filename='+${u.avatarURL}}"/>
+            </td>
+            <td th:text="${u.department?.name}">
             </td>
             <td>
                 <a th:href="@{'/user/delete?id='+ ${u.id}}">Delete</a>
@@ -50,5 +51,6 @@
             </td>
         </tr>
     </table>
+</div>
 </body>
 </html>

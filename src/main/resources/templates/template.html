@@ -1,0 +1,18 @@
+<!--template-->
+
+<html xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+    <title layout:title-patter="$CONTENT_TITLE">Demo</title>
+</head>
+<body>
+<!-- fragment menu-->
+ <div th:replace="/fragment.html::menu"></div>
+
+<!--day la cho de ke thua-->
+<div layout:fragment="content"> </div>
+
+<div th:replace="/fragment.html::footer"></div>
+</body>
+
+</html>

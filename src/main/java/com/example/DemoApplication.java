@@ -21,28 +21,5 @@ public class DemoApplication implements WebMvcConfigurer {
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
-    //cau hinh them ngon ngu
-    //tao bean tu day, check xem ngon ngu dang chon la gi
-    @Bean
-    public LocaleResolver localeResolver(){
-        //tim xem ngon ngu dang chon duoc luu o dau
-        SessionLocaleResolver resolver = new SessionLocaleResolver();
-        //mac dinh tieng viet
-        resolver.setDefaultLocale(new Locale("vi_VN"));
-        return resolver;
-    }
 
-    //giong filter, doc xem request gui len co language khong, request nao chay len cung chay qua cai nay
-    @Bean
-    LocaleChangeInterceptor localeChangeInterceptor(){
-        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("language");
-        return lci;
-    }
-
-    //add vao luong cua spring de doc
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(localeChangeInterceptor());
-    }
 }

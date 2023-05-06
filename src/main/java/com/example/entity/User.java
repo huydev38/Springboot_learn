@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 //ORM framework: Object - Record table
 //JPA - Hibernate
@@ -34,10 +35,10 @@ public class User {
 
     private String password;
 
-    @ManyToOne
-    //Many user to one department
-    //@JoinColumn(name = "department_id"); chi dung voi ManyToOne, neu ten giong thi khong can
-    private Department department;
+    @ElementCollection
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name="user_id"))
+    @Column(name="role")
+    private List<String> roles;
 
     @Temporal(TemporalType.DATE)
     private Date birthdate;

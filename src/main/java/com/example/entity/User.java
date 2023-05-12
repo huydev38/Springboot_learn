@@ -43,5 +43,7 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date birthdate;
 
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private Student student;
 }
 

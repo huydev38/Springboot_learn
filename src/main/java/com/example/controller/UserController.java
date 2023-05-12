@@ -6,8 +6,6 @@ import com.example.dto.SearchDTO;
 import com.example.dto.UserDTO;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,19 +19,20 @@ import java.nio.file.Files;
 import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 //    UserService userService = new UserService();
     @Autowired  //map bean tao truoc vao bien aka DI
     UserService userService;
 
 
-    @GetMapping("/user/list")
+    @GetMapping("/list")
     public ResponseDTO<List<UserDTO>> list(){
         List<UserDTO> users = userService.getAll();
         return ResponseDTO.<List<UserDTO>>builder().status(200).msg("Success").data(users).build();
     }
 
-    @PostMapping("user/new")
+    @PostMapping("/")
     public ResponseDTO<Void> newUser(@ModelAttribute("user") @Valid UserDTO userDTO) throws IOException {
 
         if(!userDTO.getFile().isEmpty()){
@@ -48,14 +47,14 @@ public class UserController {
     }
 
     //Download file
-    @GetMapping("/user/download")//?filename=abc.jpg
+    @GetMapping("/download")//?filename=abc.jpg
     public void download(@RequestParam("filename") String filename, HttpServletResponse resp) throws Exception{
         File file = new File("src/main/resources/static/img/"+filename);
         Files.copy(file.toPath(), resp.getOutputStream());
     }
 
 
-    @DeleteMapping("/user/delete")
+    @DeleteMapping("/")
     public ResponseDTO<Void> deleteUser(@RequestParam("id") int id){
         userService.delete(id);
         return ResponseDTO.<Void>builder().status(200).msg("Success").build();
@@ -63,7 +62,7 @@ public class UserController {
 
 
 
-    @PutMapping("/user/edit")
+    @PutMapping("/")
     public ResponseDTO<UserDTO> updateUser(@ModelAttribute UserDTO userDTO, @RequestParam(name="file", required = false)MultipartFile uploadFile){
         if(!uploadFile.isEmpty()){
             String filename = uploadFile.getOriginalFilename();
@@ -79,7 +78,7 @@ public class UserController {
         return ResponseDTO.<UserDTO>builder().status(200).msg("Success").data(userDTO).build();
     }
 
-    @PostMapping("/user/search")
+    @PostMapping("/search")
     public ResponseDTO<PageDTO<List<UserDTO>>> search(
 //
                          @ModelAttribute @Valid SearchDTO searchDTO)

@@ -3,6 +3,7 @@ package com.example.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,8 @@ public class User {
     private String username;
 
     private String password;
+
+    private String email;
 
     @ElementCollection
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name="user_id"))

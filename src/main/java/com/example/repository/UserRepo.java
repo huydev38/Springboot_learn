@@ -49,4 +49,7 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     //tu gen lenh xoa
     void deleteByUsername(String username);
+
+    @Query("SELECT u from User u where MONTH(u.birthdate)=:month and DAY(u.birthdate)=:day")
+    List<User> searchByBirthdate(@Param("day") int day, @Param("month") int month);
 }

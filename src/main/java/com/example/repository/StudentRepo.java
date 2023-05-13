@@ -11,4 +11,6 @@ import org.springframework.data.repository.query.Param;
 public interface StudentRepo extends JpaRepository<Student, Integer> {
     @Query("SELECT u from Student u  WHERE u.studentCode LIKE :x")
     Page<Student>searchByStudentCode(@Param("x") String s, Pageable pageable);
+
+
 }

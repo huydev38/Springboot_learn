@@ -8,6 +8,8 @@ import com.example.entity.User;
 import com.example.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -42,12 +44,14 @@ public class UserService {
 
     //co san deleteById()
     @Transactional
+    @CacheEvict(cacheNames = "user", key = "#id")
     public void delete(int id){
         userRepo.deleteById(id);
     }
     //co san save()
     //check xem ton tai ban ghi chua
     @Transactional
+    @CacheEvict(cacheNames = "user", key = "#userDTO.id")
     public void update(UserDTO userDTO){
         User currentUser = userRepo.findById(userDTO.getId()).orElse(null);
         if(currentUser!=null){
@@ -60,6 +64,8 @@ public class UserService {
     }
 
     //findById tra ve kieu Optional, them orElse: neu tim thay tra ve User, khong thi tra ve null
+
+    @Cacheable(cacheNames = "user", key="#id") //nếu key ở đây để trống, key sẽ tự lấy id (vì nó là biến truyền vào làm id
     public UserDTO getById(int id){
         User user = userRepo.findById(id).orElse(null);
         if(user!=null){

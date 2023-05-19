@@ -38,7 +38,7 @@ public class User {
 
     private String email;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)  //de lay ra role moi khi goi toi user
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name="user_id"))
     @Column(name="role")
     private List<String> roles;

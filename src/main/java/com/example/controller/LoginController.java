@@ -1,30 +1,41 @@
 package com.example.controller;
 
+import com.example.dto.ResponseDTO;
+import com.example.service.JwtTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 import javax.servlet.http.HttpSession;
 
-@Controller
+@RestController
 public class LoginController {
-    @GetMapping("/login")
-    public String login(){
-        return "login.html";
-    }
+
+    //authen dung AuthenticationManager, tao bean o security
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtTokenService jwtTokenService;
+
     @PostMapping("/login")
-    public String login(HttpSession session,
-                        @RequestParam("username") String username,
-                        @RequestParam("password") String password) {
+    public ResponseDTO<String> login(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password) {
 
-        if(username.equals("admin")&&password.equals("123")){
-            session.setAttribute("username",username);
+        authenticationManager.authenticate((new UsernamePasswordAuthenticationToken(username, password)));
+        //cai nay dung userdetail de check
 
-            return "redirect:/hello";
+
+
+        return ResponseDTO.<String>builder().data(jwtTokenService.createToken(username)).status(200).build(); //goi den ham createToken
+
     }
-            return "redirect:/login";
-    }
-
 }

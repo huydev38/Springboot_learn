@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 import javax.persistence.NoResultException;
+import java.nio.file.AccessDeniedException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
@@ -65,6 +66,13 @@ public class ExceptionController {
         }
 
         return ResponseEntity.badRequest().body("Invalid data");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(code= HttpStatus.FORBIDDEN)
+    public ResponseDTO<Void> accessDenied(Exception e){
+        log.info("INFO", e);
+        return ResponseDTO.<Void>builder().status(403).msg("ACCESS DENY").build();
     }
 }
 

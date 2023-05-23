@@ -3,7 +3,9 @@ package com.example;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +21,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    JwtTokenFilter jwtTokenFilter;
 
     //cau hinh qua trinh xac thuc
     @Autowired  //vi trong Spring co san /AuthenticationManagerBuilder/ nen minh Autowired no se lay Authen co san
@@ -35,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain config(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/admin/**","/user/**") //2 ** nghia la moi duong dan dang sau deu ap dung, * chi ap dung neu co 1 duong dan dang sau
+                .antMatchers("/admin/**") //2 ** nghia la moi duong dan dang sau deu ap dung, * chi ap dung neu co 1 duong dan dang sau
                 .hasAnyAuthority("ADMIN")  //yeu cau dang nhap vao co role la ADMIN
                 .antMatchers("/member/**")
                 .authenticated()
@@ -44,7 +50,18 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and().httpBasic()
                 .and().csrf().disable();
+
+        //apply filter
+        //apply filter mình tùy biến trước filter cua Spring
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+        throws Exception{
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 }

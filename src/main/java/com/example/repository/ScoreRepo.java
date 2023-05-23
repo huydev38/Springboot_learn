@@ -2,7 +2,6 @@ package com.example.repository;
 
 
 import com.example.dto.AvgScoreByCourse;
-import com.example.entity.Course;
 import com.example.entity.Score;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

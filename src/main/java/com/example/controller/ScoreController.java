@@ -6,8 +6,10 @@ import com.example.dto.ScoreDTO;
 import com.example.dto.SearchScoreDTO;
 import com.example.service.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -34,6 +36,8 @@ public class ScoreController {
         return ResponseDTO.<ScoreDTO>builder().data(scoreDTO).msg("Success").status(200).build();
     }
 
+    @Secured("ROLE_ADMIN")
+//    @RolesAllowed("ROLE_ADMIN")
     @GetMapping("/list")
     public ResponseDTO<List<ScoreDTO>> getAll(){
         return ResponseDTO.<List<ScoreDTO>>builder().data(scoreService.getAll()).status(200).msg("Success").build();

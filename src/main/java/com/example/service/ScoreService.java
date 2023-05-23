@@ -40,6 +40,8 @@ public class ScoreService {
     public void update(ScoreDTO scoreDTO){
         scoreRepo.save(new ModelMapper().map(scoreDTO, Score.class));
     }
+
+
     public List<ScoreDTO> getAll(){
         return scoreRepo.findAll().stream().map(u->convert(u)).collect(Collectors.toList());
     }

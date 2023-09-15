@@ -8,9 +8,17 @@ import com.example.entity.User;
 import com.example.repository.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service //tao bean: new Uservice, quan ly boi SpringContainer, tao truoc bean
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     UserRepo userRepo;
@@ -34,6 +42,7 @@ public class UserService {
     @Transactional //transaction, dam bao cho thuc hien thanh cong, neu khong thi rollback
     public void create(UserDTO userDTO){
         User user = new ModelMapper().map(userDTO, User.class);
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword())); //truoc khi save vao db, phai encrypt truoc
         userRepo.save(user);
     }
     public  List<UserDTO> getAll(){
@@ -43,24 +52,29 @@ public class UserService {
 
     //co san deleteById()
     @Transactional
+    @CacheEvict(cacheNames = "user", key = "#id")
     public void delete(int id){
         userRepo.deleteById(id);
     }
     //co san save()
     //check xem ton tai ban ghi chua
     @Transactional
+    @CacheEvict(cacheNames = "user", key = "#userDTO.id")
     public void update(UserDTO userDTO){
         User currentUser = userRepo.findById(userDTO.getId()).orElse(null);
         if(currentUser!=null){
             currentUser.setName(userDTO.getName());
             currentUser.setAge(userDTO.getAge());
             currentUser.setAvatarURL(userDTO.getAvatarURL());
+            currentUser.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
             userRepo.save(currentUser);
 
         }
     }
 
     //findById tra ve kieu Optional, them orElse: neu tim thay tra ve User, khong thi tra ve null
+
+    @Cacheable(cacheNames = "user", key="#id") //nếu key ở đây để trống, key sẽ tự lấy id (vì nó là biến truyền vào làm id
     public UserDTO getById(int id){
         User user = userRepo.findById(id).orElse(null);
         if(user!=null){
@@ -103,6 +117,23 @@ public class UserService {
         //T: List<UserDTO>
         pageDTO.setData(userDTOS);
         return pageDTO;
+    }
+
+    //lay ra UserDetails tu database
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User userEntity = userRepo.findByUsername(username);
+        if(userEntity==null){
+            throw new UsernameNotFoundException("Not Found");
+        }
+        //convert user->userdetails
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        for(String role:userEntity.getRoles()){
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return new org.springframework.security.core.userdetails.User(username,
+                userEntity.getPassword(),authorities);
     }
 }
 

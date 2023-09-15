@@ -3,7 +3,9 @@ package com.example.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Date;
+import java.util.List;
 
 //ORM framework: Object - Record table
 //JPA - Hibernate
@@ -34,13 +36,17 @@ public class User {
 
     private String password;
 
-    @ManyToOne
-    //Many user to one department
-    //@JoinColumn(name = "department_id"); chi dung voi ManyToOne, neu ten giong thi khong can
-    private Department department;
+    private String email;
+
+    @ElementCollection(fetch = FetchType.EAGER)  //de lay ra role moi khi goi toi user
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name="user_id"))
+    @Column(name="role")
+    private List<String> roles;
 
     @Temporal(TemporalType.DATE)
     private Date birthdate;
 
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private Student student;
 }
 
